@@ -1,0 +1,29 @@
+# Khai báo giai đoạn
+stages:
+  - build_and_push
+
+# Biến toàn cục (tùy định dạng tên ảnh)
+variables:
+  IMAGE_NAME: $CI_REGISTRY_IMAGE  # Hoặc: your-dockerhub-username/payment-service
+
+# Giai đoạn: Build & Push ảnh
+build-and-push:
+  stage: build_and_push
+  image: docker:latest
+  services:
+    - docker:dind  # ✅ Docker-in-Docker cho phép chạy lệnh Docker trong pipeline
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"  # Cấu hình bảo mật kết nối Docker Daemon
+  before_script:
+    # ✅ Đăng nhập Docker Hub dùng biến môi trường an toàn
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin docker.io
+  script:
+    # Build ảnh với đúng tên & phiên bản
+    - docker build -t $IMAGE_NAME:latest .
+    - docker tag $IMAGE_NAME:latest $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+    # Đẩy ảnh lên Docker Hub
+    - docker push $IMAGE_NAME:latest
+    - docker push $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+  after_script:
+    # Đăng xuất an toàn
+    - docker logout docker.io

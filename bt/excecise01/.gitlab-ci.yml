@@ -1,0 +1,10 @@
+# Khai báo giai đoạn
+stages:
+  - build_app
+
+# Công việc xây dựng
+build_job:
+  stage: build_app
+  image: eclipse-temurin:17-jdk-alpine  # ✅ Thêm môi trường có JDK 17
+  script:
+    - ./gradlew clean build -x test

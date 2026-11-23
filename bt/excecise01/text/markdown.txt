@@ -1,0 +1,4 @@
+**2 lỗi chính trong file gốc:**
+
+1. ❌ **Thiếu phần khai báo ảnh môi trường (`image`)** → Runner không biết dùng môi trường nào để chạy Gradle → không tìm thấy lệnh `./gradlew`
+2. ❌ **Thiếu khối `job` rõ ràng / thiếu cấu hình cơ bản** → Cấu trúc chưa hoàn chỉnh theo chuẩn GitLab CI
